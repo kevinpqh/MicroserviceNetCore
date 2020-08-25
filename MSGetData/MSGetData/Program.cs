@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Steeltoe.Extensions.Configuration.ConfigServer;
 
 namespace MSGetData
 {
@@ -20,15 +21,15 @@ namespace MSGetData
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((webHostBuilderContext, builder) => {
-                    var builtConfig = builder.Build();
+                    //var builtConfig = builder.Build();
 
-                    builder.AddAzureKeyVault(
-                        $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                        builtConfig["AzureApplicationId"],
-                        builtConfig["AzureSecretClient"]);
+                    //builder.AddAzureKeyVault(
+                    //    $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+                    //    builtConfig["AzureApplicationId"],
+                    //    builtConfig["AzureSecretClient"]);
 
-                    //var hostingEnvironment = webHostBuilderContext.HostingEnvironment;
-                    //builder.AddConfigServer(hostingEnvironment.EnvironmentName);
+                    var hostingEnvironment = webHostBuilderContext.HostingEnvironment;
+                    builder.AddConfigServer(hostingEnvironment.EnvironmentName);
                 })
                 .UseStartup<Startup>();
     }

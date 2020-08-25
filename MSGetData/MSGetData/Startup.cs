@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MSGetData.Services;
+using Steeltoe.Discovery.Client;
 
 namespace MSGetData
 {
@@ -30,6 +31,7 @@ namespace MSGetData
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDiscoveryClient(Configuration);
 
             services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
 
@@ -38,9 +40,9 @@ namespace MSGetData
                 consultConfig.Address = new Uri(address);
             }));
 
-            services.AddSingleton<IUnitOfWork>(option => new UnitOfWork(Configuration["ConnectionStringPostgres"]));
+            services.AddSingleton<IUnitOfWork>(option => new UnitOfWork(Configuration["connection_string"]));
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Auth:Jwt:Key"]));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["token:key"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -51,8 +53,8 @@ namespace MSGetData
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
 
-                        ValidIssuer = Configuration["Auth:Jwt:Issuer"],
-                        ValidAudience = Configuration["Auth:Jwt:Audience"],
+                        ValidIssuer = Configuration["token:issuer"],
+                        ValidAudience = Configuration["token:audience"],
                         IssuerSigningKey = signingKey
                     };
                     options.Events = new JwtBearerEvents
@@ -91,6 +93,8 @@ namespace MSGetData
             app.UseMvc();
 
             app.registerConsul(lifetime);
+
+            app.UseDiscoveryClient();
         }
     }
 }

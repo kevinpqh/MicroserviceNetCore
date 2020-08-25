@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MSPay.Services;
+using Steeltoe.Discovery.Client;
 
 namespace MSPay
 {
@@ -31,6 +32,8 @@ namespace MSPay
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddDiscoveryClient(Configuration);
+
             services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
 
             services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consultConfig => {
@@ -39,9 +42,9 @@ namespace MSPay
             }));
 
             //services.AddSingleton<IUnitOfWork>(option => new UnitOfWork(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddSingleton<IUnitOfWork>(option => new UnitOfWork(Configuration["ConnectionStringPostgres"]));
+            services.AddSingleton<IUnitOfWork>(option => new UnitOfWork(Configuration["connection_string"]));
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Auth:Jwt:Key"]));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["token:key"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -52,8 +55,8 @@ namespace MSPay
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
 
-                        ValidIssuer = Configuration["Auth:Jwt:Issuer"],
-                        ValidAudience = Configuration["Auth:Jwt:Audience"],
+                        ValidIssuer = Configuration["token:issuer"],
+                        ValidAudience = Configuration["token:audience"],
                         IssuerSigningKey = signingKey
                     };
                     options.Events = new JwtBearerEvents
@@ -90,6 +93,8 @@ namespace MSPay
             app.UseMvc();
 
             app.registerConsul(lifetime);
+
+            app.UseDiscoveryClient();
         }
     }
 }
