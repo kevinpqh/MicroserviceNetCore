@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
+using MSSecurity.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
-using MSSecurity.Models;
 
 namespace MSSecurity.Service
 {
@@ -26,7 +26,7 @@ namespace MSSecurity.Service
             {
                 throw ex;
             }
-            
+
         }
     }
 }

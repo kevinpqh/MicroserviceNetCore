@@ -17,16 +17,17 @@ namespace MSSecurity.Data
             _configuration = configuration;
 
             //var client = new MongoClient(_configuration.GetSection("MongoConnection:ConnectionString").Value);
-            var client = new MongoClient(_configuration["ConnectionStringMongo"]);
+            var client = new MongoClient(_configuration["connection_string"]);
             if (client != null)
             {
                 //_database = client.GetDatabase(_configuration.GetSection("MongoConnection:Database").Value);
-                _database = client.GetDatabase(_configuration["databasemongo"]);
+                _database = client.GetDatabase(_configuration["database"]);
             }
         }
         public IMongoCollection<User> User
         {
-            get {
+            get
+            {
                 return _database.GetCollection<User>("User");
             }
         }

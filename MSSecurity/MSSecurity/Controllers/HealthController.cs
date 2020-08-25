@@ -12,7 +12,8 @@ namespace MSSecurity.Controllers
     public class HealthController : ControllerBase
     {
         [HttpGet("status")]
-        public IActionResult Status() {
+        public IActionResult Status()
+        {
             return Ok();
         }
     }

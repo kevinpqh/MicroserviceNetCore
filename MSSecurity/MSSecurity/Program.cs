@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Steeltoe.Extensions.Configuration.ConfigServer;
 
-
 namespace MSSecurity
 {
     public class Program
@@ -22,12 +21,12 @@ namespace MSSecurity
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((webHostBuilderContext, builder) => {
-                    var builtConfig = builder.Build();
+                    //var builtConfig = builder.Build();
 
-                    builder.AddAzureKeyVault(
-                        $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                        builtConfig["AzureApplicationId"],
-                        builtConfig["AzureSecretClient"]);
+                    //builder.AddAzureKeyVault(
+                    //    $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+                    //    builtConfig["AzureApplicationId"],
+                    //    builtConfig["AzureSecretClient"]);
 
                     /**AÑADIR LA CONFIG DE SPRING CLOUD**/
                     var hostingEnvironment = webHostBuilderContext.HostingEnvironment;

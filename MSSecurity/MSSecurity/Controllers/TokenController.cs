@@ -40,15 +40,23 @@ namespace MSSecurity.Controllers
         }
         private string CreateToken()
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Auth:Jwt:Key"]));
-            var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
+            try
+            {
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["token:key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_configuration["Auth:Jwt:Issuer"], _configuration["Auth:Jwt:Audience"],
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Auth:Jwt:TokenExpirationInMinutes"])), 
-                signingCredentials: creds);
-            string _token = new JwtSecurityTokenHandler().WriteToken(token);
+                var token = new JwtSecurityToken(_configuration["token:issuer"], _configuration["token:audience"],
+                    expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["token:expiration_minutes"])),
+                    signingCredentials: creds);
+                string _token = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return _token;
+                return _token;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
         }
     }
 }
