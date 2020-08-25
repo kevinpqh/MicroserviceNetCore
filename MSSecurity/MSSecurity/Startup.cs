@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Consul;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MSSecurity.Service;
+using Steeltoe.Discovery.Client;
 
 namespace MSSecurity
 {
@@ -29,6 +31,16 @@ namespace MSSecurity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDiscoveryClient(Configuration);
+
+            services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
+
+            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consultConfig => {
+                var address = Configuration["consulConfig:address"];
+                consultConfig.Address = new Uri(address);
+            }));
+
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["token:key"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -65,7 +77,7 @@ namespace MSSecurity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -79,6 +91,10 @@ namespace MSSecurity
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.registerConsul(lifetime);
+
+            app.UseDiscoveryClient();
         }
     }
 }
