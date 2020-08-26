@@ -24,8 +24,8 @@ namespace MSSecurity.Controllers
             _userService = userService;
             _configuration = configuration;
         }
-        [HttpGet]
-        public async Task<ActionResult> Get(UserRequest request)
+        [HttpPost]
+        public async Task<ActionResult> Post(UserRequest request)
         {
             var res = await _userService.GetAll();
 

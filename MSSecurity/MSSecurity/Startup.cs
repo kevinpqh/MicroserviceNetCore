@@ -32,7 +32,7 @@ namespace MSSecurity
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDiscoveryClient(Configuration);
+            //services.AddDiscoveryClient(Configuration);
 
             services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
 
@@ -94,7 +94,7 @@ namespace MSSecurity
 
             app.registerConsul(lifetime);
 
-            app.UseDiscoveryClient();
+            //app.UseDiscoveryClient();
         }
     }
 }

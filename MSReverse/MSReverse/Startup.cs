@@ -32,7 +32,7 @@ namespace MSReverse
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDiscoveryClient(Configuration);
+            //services.AddDiscoveryClient(Configuration);
 
             services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
 
@@ -43,35 +43,35 @@ namespace MSReverse
 
             services.AddSingleton<IUnitOfWork>(option => new UnitOfWork(Configuration["connection_string"]));
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["token:key"]));
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+            //var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["token:key"]));
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateIssuer = true,
+            //            ValidateAudience = true,
+            //            ValidateLifetime = true,
+            //            ValidateIssuerSigningKey = true,
 
-                        ValidIssuer = Configuration["token:issuer"],
-                        ValidAudience = Configuration["token:audience"],
-                        IssuerSigningKey = signingKey
-                    };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnAuthenticationFailed = context =>
-                        {
-                            Console.WriteLine("OnAuthenticationFailed" + context.Exception.Message);
-                            return Task.CompletedTask;
-                        },
-                        OnTokenValidated = context =>
-                        {
-                            Console.WriteLine("OnTokenValidated" + context.SecurityToken);
-                            return Task.CompletedTask;
-                        },
-                    };
-                });
+            //            ValidIssuer = Configuration["token:issuer"],
+            //            ValidAudience = Configuration["token:audience"],
+            //            IssuerSigningKey = signingKey
+            //        };
+            //        options.Events = new JwtBearerEvents
+            //        {
+            //            OnAuthenticationFailed = context =>
+            //            {
+            //                Console.WriteLine("OnAuthenticationFailed" + context.Exception.Message);
+            //                return Task.CompletedTask;
+            //            },
+            //            OnTokenValidated = context =>
+            //            {
+            //                Console.WriteLine("OnTokenValidated" + context.SecurityToken);
+            //                return Task.CompletedTask;
+            //            },
+            //        };
+            //    });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -94,7 +94,7 @@ namespace MSReverse
 
             app.registerConsul(lifetime);
 
-            app.UseDiscoveryClient();
+            //app.UseDiscoveryClient();
         }
     }
 }

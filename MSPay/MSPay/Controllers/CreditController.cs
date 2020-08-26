@@ -12,7 +12,7 @@ namespace MSPay.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class CreditController : ControllerBase
     {
         protected readonly IUnitOfWork _unitOfWork;
