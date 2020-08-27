@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Consul;
+using Jaeger;
+using Jaeger.Samplers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +17,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MSReverse.Services;
+using OpenTracing;
+using OpenTracing.Contrib.NetCore.CoreFx;
+using OpenTracing.Util;
 using Steeltoe.Discovery.Client;
 
 namespace MSReverse
@@ -72,6 +77,32 @@ namespace MSReverse
             //            },
             //        };
             //    });
+
+            services.AddSingleton<ITracer>(serviceProvider => {
+
+                string serviceName = "SERVICE-REVERSE";
+
+                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+
+                ISampler sampler = new ConstSampler(sample: true);
+
+                ITracer tracer = new Tracer.Builder(serviceName)
+                    .WithLoggerFactory(loggerFactory)
+                    .WithSampler(sampler)
+                    .Build();
+
+                GlobalTracer.Register(tracer);
+
+                return tracer;
+
+            });
+
+            services.AddOpenTracing();
+
+            services.Configure<HttpHandlerDiagnosticOptions>(options =>
+            {
+                options.IgnorePatterns.Add(x => !x.RequestUri.IsLoopback);
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

@@ -1,0 +1,48 @@
+
+                    <div class="views">
+                        <div class="view">
+                            <div class="view-title">
+                                <div class="view-name">
+                                    <div class="view-name-small">Créditos</div>
+                                    <div class="view-name-text">Listado de créditos</div>
+                                </div>
+                            </div>
+                            <div class="view-content">
+                                <div class="table wide">
+                                    <div class="thead">
+                                        <div class="row">
+                                            <div class="col">ID Credito</div>
+                                            <div class="col">Total</div>
+                                            <div class="col">Saldo</div>
+                                            <div class="col">Estado</div>
+                                            <div class="col">Descripcion</div>
+                                            <div class="col">Cliente</div>
+                                            <div class="col">Abono</div>
+                                            <div class="col">Extorno</div>
+                                            
+                                           
+                                        </div>
+                                    </div>
+                                    <div class="tbody">
+                                        
+                                        <div class="row"  *ngFor="let p of creditos">
+                                            <div class="col">{{ p.idCredit }}</div>
+                                            <div class="col">{{ p.amountTotal }}</div>
+                                            <div class="col">{{ p.residueTotal }}</div>
+                                            <div class="col">{{ p.status }}</div>
+                                            <div class="col">{{ p.description }}</div>
+                                            <div class="col">{{ p.name }} {{ p.lastName }}</div>
+
+                                            <div class="col text-center">
+                                                <button *ngIf="p.status=='Abierto'" (click)="pagar(p)" class="button-ghost">Abono</button>
+                                            </div>
+                                            <div class="col text-center">
+                                                <button *ngIf="p.status=='Pagado'" (click)="extorno(p)"  class="button-ghost">Extorno</button>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>

@@ -29,7 +29,7 @@ namespace MSSecurity.Controllers
         {
             var res = await _userService.GetAll();
 
-            var user = res.Where(whr => whr.login.Equals(request.Login) && whr.password.Equals(request.Password)).FirstOrDefault();
+            var user = res.Where(whr => whr.login.Equals(request.Username) && whr.password.Equals(request.Password)).FirstOrDefault();
             if (user == null)
             {
                 return Unauthorized();
